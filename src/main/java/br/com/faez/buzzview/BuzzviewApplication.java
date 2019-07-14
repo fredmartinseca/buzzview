@@ -1,4 +1,4 @@
-package br.com.faez;
+package br.com.faez.buzzview;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package br.com.faez.entity;
+package br.com.faez.buzzview.entity;
 
 import java.io.Serializable;
 
