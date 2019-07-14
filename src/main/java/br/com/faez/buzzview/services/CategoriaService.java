@@ -8,12 +8,16 @@ import br.com.faez.buzzview.repositories.CategoriaRepository;
 
 @Service
 public class CategoriaService {
-	
+
 	@Autowired
 	private CategoriaRepository repo;
-	
+
 	public Categoria buscar(Integer id) {
 		Categoria obj = repo.findOne(id);
+		if (obj == null) {
+		 throw new br.com.faez.buzzview.services.exception.ObjectNotFoundException("Objeto não encontrado! Id: " + id
+		+ ", Tipo: " + Categoria.class.getName());
+		}
 		return obj;
 	}
 
