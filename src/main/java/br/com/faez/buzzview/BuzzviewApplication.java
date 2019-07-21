@@ -1,5 +1,6 @@
 package br.com.faez.buzzview;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import br.com.faez.buzzview.entity.Cidade;
 import br.com.faez.buzzview.entity.Cliente;
 import br.com.faez.buzzview.entity.Endereco;
 import br.com.faez.buzzview.entity.Estado;
+import br.com.faez.buzzview.entity.Pagamento;
+import br.com.faez.buzzview.entity.PagamentoComBoleto;
+import br.com.faez.buzzview.entity.PagamentoComCartao;
+import br.com.faez.buzzview.entity.Pedido;
 import br.com.faez.buzzview.entity.Produto;
+import br.com.faez.buzzview.entity.enums.EstadoPagamento;
 import br.com.faez.buzzview.entity.enums.TipoCliente;
 import br.com.faez.buzzview.repositories.CategoriaRepository;
 import br.com.faez.buzzview.repositories.CidadeRepository;
 import br.com.faez.buzzview.repositories.ClienteRepository;
 import br.com.faez.buzzview.repositories.EnderecoRepository;
 import br.com.faez.buzzview.repositories.EstadoRepository;
+import br.com.faez.buzzview.repositories.PagamentoRepository;
+import br.com.faez.buzzview.repositories.PedidoRepository;
 import br.com.faez.buzzview.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -36,6 +44,10 @@ public class BuzzviewApplication implements CommandLineRunner {
 	private ClienteRepository clienteRepository;
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(BuzzviewApplication.class, args);
@@ -81,6 +93,22 @@ public class BuzzviewApplication implements CommandLineRunner {
 		
 		clienteRepository.save(Arrays.asList(cli1));
 		enderecoRepository.save(Arrays.asList(e1, e2));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/07/2019 17:00"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("26/07/2019 14:00"), cli1, e2);
+		
+		Pagamento pag1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 12);
+		ped1.setPagamento(pag1);
+		
+		Pagamento pag2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2019 00:00"), null);
+		ped2.setPagamento(pag2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		pedidoRepository.save(Arrays.asList(ped1, ped2));
+		pagamentoRepository.save(Arrays.asList(pag1, pag2));
 	}
 
 }
